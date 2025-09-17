@@ -75,6 +75,7 @@ export function UserProfile() {
           .from('profiles')
           .select(`
             id,
+            user_id,
             username,
             avatar_url,
             created_at,
@@ -84,7 +85,7 @@ export function UserProfile() {
               )
             )
           `)
-          .eq('id', user.id)
+          .or(`id.eq.${user.id},user_id.eq.${user.id}`)
           .single();
 
         if (error) {
