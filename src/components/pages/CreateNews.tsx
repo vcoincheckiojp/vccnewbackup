@@ -6,7 +6,7 @@ import { Textarea } from '../ui/textarea';
 import { Label } from '../ui/label';
 import { Badge } from '../ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { Separator } from '../ui/Separator';
+import { Separator } from '../ui/separator';
 import { ImageWithFallback } from '../ui/ImageWithFallback';
 import { 
   ArrowLeft,
