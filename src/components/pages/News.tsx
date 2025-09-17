@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
-import { useSupabase } from '../../contexts/SupabaseContext'
+import { useSupabase } from '../../contexts/supabaseContext'
 import { 
   Search, Calendar, Tag, Eye, Heart, ExternalLink, Newspaper, Plus, Filter, 
   TrendingUp, Zap, Coins, Shield, BarChart3, Users, Globe, Clock, ChevronRight,
