@@ -42,7 +42,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('*')
-          .eq('id', session.user.id)
+          .eq('user_id', session.user.id)
           .single();
         console.log('📊 AuthContext: Profile data:', profile ? 'Profile found' : 'No profile', profile);
         console.log('🔍 AuthContext: Profile error:', profileError);
@@ -79,14 +79,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Listen for auth changes
     console.log('👂 AuthContext: Setting up auth state listener...');
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const listener = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('🔔 AuthContext: Auth state changed:', event, session ? 'Session exists' : 'No session');
       if (event === 'SIGNED_IN' && session?.user) {
         console.log('👤 AuthContext: Fetching profile after sign in for ID:', session.user.id);
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('*')
-          .eq('id', session.user.id)
+          .eq('user_id', session.user.id)
           .single();
         console.log('📊 AuthContext: Profile after sign in:', profile ? 'Profile found' : 'No profile', profile);
         console.log('🔍 AuthContext: Profile error:', profileError);
@@ -122,8 +122,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setIsAuthenticated(false);
       }
     });
-
-    return () => subscription.unsubscribe();
+    // Safer unsubscribe
+    const subscription = (listener as any)?.data?.subscription ?? (listener as any);
+    return () => {
+      try { subscription?.unsubscribe?.(); } catch (err) { console.warn('Failed to unsubscribe auth listener', err); }
+    };
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
