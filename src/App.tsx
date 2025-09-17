@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { Toaster } from './components/ui/sonner';
-import { SupabaseProvider } from './contexts/SupabaseContext';
+import { SupabaseProvider } from './contexts/supabaseContext';
 
 
 // Import layout components
