@@ -7,13 +7,13 @@ import {
   TrendingUp, Zap, Coins, Shield, BarChart3, Users, Globe, Clock, ChevronRight,
   BookmarkPlus, Share2
 } from 'lucide-react'
-import { Button } from '../ui/Button'
-import { Input } from '../ui/Input'
-import { Card, CardContent, CardHeader } from '../ui/Card'
-import { Badge } from '../ui/Badge'
-import { Avatar, AvatarImage, AvatarFallback } from '../ui/Avatar'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/Select'
-import { Separator } from '../ui/Separator'
+import { Button } from '../ui/button'
+import { Input } from '../ui/input'
+import { Card, CardContent, CardHeader } from '../ui/card'
+import { Badge } from '../ui/badge'
+import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
+import { Separator } from '../ui/separator'
 import { ImageWithFallback } from '../ui/ImageWithFallback'
 
 // Helper functions
