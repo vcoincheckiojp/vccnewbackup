@@ -1,7 +1,7 @@
 
   # Design System for Dashboard App
 
-  This is a code bundle for Design System for Dashboard App. The original project is available at https://www.figma.com/design/3Ve54MlBazQ8J75emLEPIz/Design-System-for-Dashboard-App.
+  
 
   ## Running the code
 
