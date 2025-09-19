@@ -1,7 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import supabase from '../utils/supabase/supabase';
 
-type UserRole = 'admin' | 'super_moderator' | 'project_moderator' | 'library_moderator' | 'community_moderator' | 'user';
+type UserRole = 'admin' | 'super_moderator' | 'project_moderator' | 'library_moderator' | '            id: profile.user_id || userId,
+            name: profile.username || profile.display_name || email?.split('@')[0] || 'User',
+            email: profile.email || email || '',
+            avatar: profile.avatar_url || undefined,
+            role: (profile.role as UserRole) || 'user',nity_moderator' | 'user';
 
 interface User {
   id: string;
@@ -31,15 +35,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Helper: fetch profile safely, selecting explicit columns and returning maybeSingle
   const fetchProfile = async (userId: string) => {
     try {
-      const { data: profile, error: profileError } = await supabase
+      const { data: profile, error } = await supabase
         .from('profiles')
-        .select('id, user_id, username, display_name, avatar_url, role, email')
+        .select('user_id, username, display_name, avatar_url, role, email')
         .eq('user_id', userId)
-        .maybeSingle(); // returns null if not found instead of throwing
+        .maybeSingle();
 
-      if (profileError) {
-        console.error('❌ fetchProfile - query error:', profileError);
-        return { profile: null, error: profileError };
+      if (error) {
+        console.error('❌ fetchProfile - query error:', error);
+        return { profile: null, error };
       }
       return { profile, error: null };
     } catch (err) {
@@ -86,7 +90,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
           if (profile) {
             const userData = {
-              id: profile.id || session.user.id,
+              id: profile.user_id || session.user.id,
               name: profile.username || profile.display_name || session.user.email?.split('@')[0] || 'User',
               email: profile.email || session.user.email || '',
               avatar: profile.avatar_url || undefined,
@@ -142,7 +146,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
           if (profile) {
             const userData = {
-              id: profile.id || session.user.id,
+              id: profile.user_id || session.user.id,
               name: profile.username || profile.display_name || session.user.email?.split('@')[0] || 'User',
               email: profile.email || session.user.email || '',
               avatar: profile.avatar_url || undefined,
@@ -220,7 +224,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setIsAuthenticated(true);
         } else if (profile) {
           setUser({
-            id: profile.id || userId,
+            id: profile.user_id || userId,
             name: profile.username || profile.display_name || email.split('@')[0],
             email: profile.email || email,
             avatar: profile.avatar_url || undefined,
