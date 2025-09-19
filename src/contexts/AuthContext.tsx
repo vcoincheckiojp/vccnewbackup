@@ -38,12 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           username,
           display_name,
           avatar_url,
-          email,
-          user_roles!inner (
-            roles!inner (
-              name
-            )
-          )
+          email
         `)
         .eq('user_id', userId)
         .maybeSingle();
@@ -53,13 +48,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { profile: null, error };
       }
       
-      // Transform the nested role data
-      const transformedProfile = profile ? {
+      // Add default role
+      const profileWithRole = profile ? {
         ...profile,
-        role: profile.user_roles?.[0]?.roles?.name || 'user'
+        role: 'user' as const
       } : null;
       
-      return { profile: transformedProfile, error: null };
+      return { profile: profileWithRole, error: null };
     } catch (err) {
       console.error('❌ fetchProfile - exception:', err);
       return { profile: null, error: err };
