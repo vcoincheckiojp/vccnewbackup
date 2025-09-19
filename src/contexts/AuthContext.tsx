@@ -33,7 +33,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const { data: profile, error } = await supabase
         .from('profiles')
-        .select('user_id, username, display_name, avatar_url, role, email')
+        .select(`
+          user_id,
+          username,
+          display_name,
+          avatar_url,
+          email,
+          user_roles!inner (
+            roles!inner (
+              name
+            )
+          )
+        `)
         .eq('user_id', userId)
         .maybeSingle();
 
@@ -41,7 +52,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.error('❌ fetchProfile - query error:', error);
         return { profile: null, error };
       }
-      return { profile, error: null };
+      
+      // Transform the nested role data
+      const transformedProfile = profile ? {
+        ...profile,
+        role: profile.user_roles?.[0]?.roles?.name || 'user'
+      } : null;
+      
+      return { profile: transformedProfile, error: null };
     } catch (err) {
       console.error('❌ fetchProfile - exception:', err);
       return { profile: null, error: err };
