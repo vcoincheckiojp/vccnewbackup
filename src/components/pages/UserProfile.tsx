@@ -66,8 +66,10 @@ export function UserProfile() {
   // Fetch user data from Supabase when user is available
   useEffect(() => {
     const fetchUserData = async () => {
-      if (!user?.id) return;
-      
+      // Get session from Supabase auth
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user?.id) return;
+
       setLoading(true);
       try {
 
@@ -85,7 +87,7 @@ export function UserProfile() {
               )
             )
           `)
-          .eq('user_id', user.id)
+          .eq("user_id", session.user.id)
           .single();
 
         if (error) {
