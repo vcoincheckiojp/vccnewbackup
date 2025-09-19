@@ -70,11 +70,11 @@ export function UserProfile() {
       
       setLoading(true);
       try {
-        // Fetch profile data with role information
+
+        // Fetch profile data with role information (fix: use user_id, update select fields)
         const { data: profileData, error } = await supabase
           .from('profiles')
           .select(`
-            id,
             user_id,
             username,
             avatar_url,
@@ -85,7 +85,7 @@ export function UserProfile() {
               )
             )
           `)
-          .or(`id.eq.${user.id},user_id.eq.${user.id}`)
+          .eq('user_id', user.id)
           .single();
 
         if (error) {
@@ -95,17 +95,16 @@ export function UserProfile() {
         }
 
         if (profileData) {
-          // Map Supabase data to UI format
+          // Map Supabase data to UI format (fix: use user_id for id)
           const mappedData = {
             ...mockUserData, // Use mock data as fallback for missing fields
-            id: profileData.id,
+            id: profileData.user_id,
             name: profileData.username || mockUserData.name,
             email: user.email || mockUserData.email,
             avatar: profileData.avatar_url || mockUserData.avatar,
             role: profileData.user_roles?.[0]?.roles?.name || mockUserData.role,
             joinDate: profileData.created_at ? new Date(profileData.created_at).toISOString().split('T')[0] : mockUserData.joinDate
           };
-          
           setUserData(mappedData);
         }
       } catch (error) {
