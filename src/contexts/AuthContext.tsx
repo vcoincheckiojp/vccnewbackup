@@ -1,11 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import supabase from '../utils/supabase/supabase';
 
-type UserRole = 'admin' | 'super_moderator' | 'project_moderator' | 'library_moderator' | '            id: profile.user_id || userId,
-            name: profile.username || profile.display_name || email?.split('@')[0] || 'User',
-            email: profile.email || email || '',
-            avatar: profile.avatar_url || undefined,
-            role: (profile.role as UserRole) || 'user',nity_moderator' | 'user';
+type UserRole = 'admin' | 'super_moderator' | 'project_moderator' | 'library_moderator' | 'community_moderator' | 'user';
 
 interface User {
   id: string;
