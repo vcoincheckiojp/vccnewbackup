@@ -95,15 +95,35 @@ export function UserProfile() {
         }
 
         if (profileData) {
-          // Map Supabase data to UI format (fix: use user_id for id)
+          // Map Supabase data to UI format (fallback: empty string/null only)
           const mappedData = {
-            
             id: profileData.user_id,
-            name: profileData.username || mockUserData.name,
-            email: user.email || mockUserData.email,
-            avatar: profileData.avatar_url || mockUserData.avatar,
-            role: profileData.user_roles?.[0]?.roles?.name || mockUserData.role,
-            joinDate: profileData.created_at ? new Date(profileData.created_at).toISOString().split('T')[0] : mockUserData.joinDate
+            name: profileData.username || '',
+            email: user.email || '',
+            avatar: profileData.avatar_url || '',
+            role: profileData.user_roles?.[0]?.roles?.[0]?.name || '',
+            joinDate: profileData.created_at ? new Date(profileData.created_at).toISOString().split('T')[0] : '',
+            // fallback empty for other fields if needed
+            stats: {
+              contributingScore: 0,
+              totalReviews: 0,
+              threadsCreated: 0,
+              commentsPosted: 0,
+              helpfulVotes: 0,
+              profileViews: 0,
+              articlesWritten: 0,
+              eventsAttended: 0
+            },
+            badges: [],
+            recentActivity: [],
+            recentReviews: [],
+            followedProjects: [],
+            mySubmissions: [],
+            location: '',
+            bio: '',
+            website: '',
+            twitter: '',
+            github: ''
           };
           setUserData(mappedData);
         }
