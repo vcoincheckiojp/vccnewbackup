@@ -97,7 +97,7 @@ export function UserProfile() {
         if (profileData) {
           // Map Supabase data to UI format (fix: use user_id for id)
           const mappedData = {
-            ...mockUserData, // Use mock data as fallback for missing fields
+            
             id: profileData.user_id,
             name: profileData.username || mockUserData.name,
             email: user.email || mockUserData.email,
