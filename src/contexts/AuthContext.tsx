@@ -155,11 +155,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
           if (profile) {
             const userData = {
-              id: profile.user_id || session.user.id,
-              name: profile.username || profile.display_name || session.user.email?.split('@')[0] || 'User',
-              email: profile.email || session.user.email || '',
-              avatar: profile.avatar_url || undefined,
-              role: (profile.role as UserRole) || 'user',
+              id: session.user.id, // Always use session user id
+              name: profile.username || session.user.email?.split('@')[0] || 'User',
+              email: session.user.email || '',
+              avatar: profile.avatar_url,
+              role: 'user' as UserRole, // Default role for now
             };
             console.log('✅ AuthContext: Setting user data after sign in:', userData);
             setUser(userData);
@@ -233,11 +233,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setIsAuthenticated(true);
         } else if (profile) {
           setUser({
-            id: profile.user_id || userId,
-            name: profile.username || profile.display_name || email.split('@')[0],
-            email: profile.email || email,
-            avatar: profile.avatar_url || undefined,
-            role: (profile.role as UserRole) || 'user',
+            id: userId, // Always use auth user id
+            name: profile.username || email.split('@')[0],
+            email: email,
+            avatar: profile.avatar_url,
+            role: 'user' as UserRole, // Default role for now
           });
           setIsAuthenticated(true);
         } else {
