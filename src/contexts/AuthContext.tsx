@@ -14,6 +14,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
+  loading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; userId?: string; error?: string }>;
   register: (name: string, email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
@@ -27,6 +28,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // Helper: fetch profile safely, selecting explicit columns and returning maybeSingle
   const fetchProfile = async (userId: string) => {
@@ -62,6 +64,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
+    setLoading(true);
     console.log('🔄 AuthContext: Initializing Supabase connection check...');
     const getSession = async () => {
       try {
@@ -73,6 +76,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if (sessionError) {
           console.error('❌ AuthContext: getSession error:', sessionError);
+          setLoading(false);
           return;
         }
 
@@ -94,6 +98,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             };
             setUser(fallback);
             setIsAuthenticated(true);
+            setLoading(false);
             return;
           }
 
@@ -108,6 +113,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             console.log('✅ AuthContext: Setting user data from profile:', userData);
             setUser(userData);
             setIsAuthenticated(true);
+            setLoading(false);
           } else {
             // No profile row exists — set basic user object
             console.warn('⚠️ AuthContext: No profile row found for user. Using fallback.');
@@ -120,10 +126,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             };
             setUser(fallback);
             setIsAuthenticated(true);
+            setLoading(false);
           }
+        } else {
+          setLoading(false);
         }
       } catch (err) {
         console.error('❌ AuthContext: getSession exception:', err);
+        setLoading(false);
       }
     };
 
@@ -135,6 +145,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       try {
         if ((event === 'SIGNED_IN' || event === 'USER_UPDATED') && session?.user) {
+          setLoading(true);
           console.log('👤 AuthContext: Fetching profile after sign in/update for ID:', session.user.id);
           const { profile, error: profileError } = await fetchProfile(session.user.id);
 
@@ -150,6 +161,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             };
             setUser(fallback);
             setIsAuthenticated(true);
+            setLoading(false);
             return;
           }
 
@@ -164,6 +176,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             console.log('✅ AuthContext: Setting user data after sign in:', userData);
             setUser(userData);
             setIsAuthenticated(true);
+            setLoading(false);
           } else {
             console.warn('⚠️ AuthContext: No profile found after sign in - using fallback.');
             const fallback = {
@@ -175,14 +188,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             };
             setUser(fallback);
             setIsAuthenticated(true);
+            setLoading(false);
           }
         } else if (event === 'SIGNED_OUT') {
           console.log('🚪 AuthContext: User signed out');
           setUser(null);
           setIsAuthenticated(false);
+          setLoading(false);
         }
       } catch (err) {
         console.error('❌ AuthContext: onAuthStateChange handler exception:', err);
+        setLoading(false);
       }
     });
 
@@ -332,6 +348,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       value={{
         user,
         isAuthenticated,
+        loading,
         login,
         register,
         logout,

@@ -54,16 +54,21 @@ import { Error403 } from './components/errors/Error403';
 
 // Protected Route Component for role-based access
 function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles: string[] }) {
-  const { user, isAuthenticated } = useAuth();
-  
+  const { user, isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    // You can replace this with a better spinner if you have one
+    return <div style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span>Loading...</span></div>;
+  }
+
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
-  
+
   if (!user || !allowedRoles.includes(user.role)) {
     return <Error403 />;
   }
-  
+
   return <>{children}</>;
 }
 
